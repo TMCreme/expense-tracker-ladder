@@ -11,6 +11,7 @@ from rest_framework import status
 
 SIGNUP_URL = reverse("auth:signup")
 LOGIN_URL = reverse("auth:login")
+LOGOUT_URL = reverse("auth:logout")
 
 
 def create_user(**params):
@@ -139,5 +140,70 @@ class UserAPITests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_successful_logout(self):
+        """Test successful logout"""
+        payload = {
+            "email": "test@example.com",
+            "password": "testpasswd123",
+            "first_name": "Test",
+            "last_name": "Test",
+            "username": "testuser"
+        }
+        create_user(**payload)
+
+        login_user = self.client.post(
+            LOGIN_URL,
+            {
+                "email": "test@example.com",
+                "password": "testpasswd123"
+            }
+        )
+
+        response = self.client.post(
+            LOGOUT_URL,
+            {
+                "refresh": login_user.data["tokens"]["refresh_token"]
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_logout_with_no_refresh_token(self):
+        """Test logout without refresh token"""
+        response = self.client.post(
+            LOGOUT_URL,
+            {
+                "refresh": ""
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_logout_with_access_token_value_with_refresh_key(self):
+        """Refresh key will have access token"""
+        payload = {
+            "email": "test@example.com",
+            "password": "testpasswd123",
+            "first_name": "Test",
+            "last_name": "Test",
+            "username": "testuser"
+        }
+        create_user(**payload)
+
+        login_user = self.client.post(
+            LOGIN_URL,
+            {
+                "email": "test@example.com",
+                "password": "testpasswd123"
+            }
+        )
+
+        response = self.client.post(
+            LOGOUT_URL,
+            {
+                "refresh": login_user.data["tokens"]["access_token"]
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 # Create your tests here.

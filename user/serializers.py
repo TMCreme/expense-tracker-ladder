@@ -40,3 +40,8 @@ class AuthTokenSerializer(serializers.Serializer):
         style={'input_type': 'password'},
         trim_whitespace=False,
     )
+
+
+class LogoutSerializer(serializers.Serializer):
+    """Serializer class for logout allow for a field"""
+    refresh = serializers.CharField()
