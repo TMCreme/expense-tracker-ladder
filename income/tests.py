@@ -31,6 +31,7 @@ class IncomeAPITests(TestCase):
         """Test post income by user"""
         payload = {"name_of_revenue": "salary", "amount": 100}
         response = self.client.post("/income/user/", payload)
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("id", response.data)
         self.assertIn("name_of_revenue", response.data)
@@ -40,26 +41,30 @@ class IncomeAPITests(TestCase):
         """Test adding income with empty string as name"""
         payload = {"name_of_revenue": "", "amount": 100}
         response = self.client.post("/income/user/", payload)
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_add_income_with_no_name(self):
         """Add income without the name parameter"""
         payload = {"amount": 100}
         response = self.client.post("/income/user/", payload)
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_add_with_empty_amount(self):
         """Add income with empty string"""
         payload = {"name_of_revenue": "salary", "amount": ""}
         response = self.client.post("/income/user/", payload)
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_get_user_income(self):
-        """Add income with negative amount"""
+        """get income"""
         payload = {"name_of_revenue": "salary", "amount": 100}
         self.client.post("/income/user/", payload)
         response = self.client.get("/income/user/")
         data_size = len(response.data)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data_size, 1)
 
@@ -77,6 +82,7 @@ class IncomeAPITests(TestCase):
         client2.post("/income/user/", payload)
 
         response = self.client.get("/income/user/")
+
         data_size = len(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data_size, 0)
@@ -88,6 +94,7 @@ class IncomeAPITests(TestCase):
         response = self.client.get("/income/user/{}/".format(
             created_income.data["id"])
             )
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("id", response.data)
         self.assertIn("name_of_revenue", response.data)
@@ -102,6 +109,7 @@ class IncomeAPITests(TestCase):
             "/income/user/{}/".format(created_income.data["id"]),
             {"name_of_revenue": "salary", "amount": 200},
         )
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["name_of_revenue"],
@@ -111,12 +119,19 @@ class IncomeAPITests(TestCase):
 
     def test_update_put_with_partial_data(self):
         """Put Update an already created income data with partial"""
-        payload = {"name_of_revenue": "salary", "amount": 100}
+        payload = {
+            "name_of_revenue": "salary",
+            "amount": 100
+            }
         created_income = self.client.post("/income/user/", payload)
+
         response = self.client.put(
             "/income/user/{}/".format(
-                created_income.data["id"]), {"amount": 200}
+                created_income.data["id"]
+                ),
+            {"amount": 200}
         )
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_existing_income_data_partial(self):
@@ -127,6 +142,7 @@ class IncomeAPITests(TestCase):
             "/income/user/{}/".format(
                 created_income.data["id"]), {"amount": 200}
         )
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["name_of_revenue"],
@@ -141,6 +157,7 @@ class IncomeAPITests(TestCase):
         response = self.client.delete(
             "/income/user/{}/".format(created_income.data["id"])
         )
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_an_already_deleted_item(self):
@@ -153,6 +170,7 @@ class IncomeAPITests(TestCase):
         response2 = self.client.delete(
             "/income/user/{}/".format(created_income.data["id"])
         )
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
 

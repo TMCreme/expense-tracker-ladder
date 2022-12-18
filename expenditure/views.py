@@ -1,19 +1,19 @@
 """
-Views for Income API
+Views for the user's Expenditure
 """
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Income
+from .models import Expenditure
 
-from .serializers import IncomeSerializer
+from .serializers import ExpenditureSerializer
 
 
-class IncomeAPIView(viewsets.ModelViewSet):
-    """Operations about a user's income"""
-    serializer_class = IncomeSerializer
+class ExpenditureAPIView(viewsets.ModelViewSet):
+    """Operations about a user's expenditure"""
+    serializer_class = ExpenditureSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Income.objects.all()
+    queryset = Expenditure.objects.all()
 
     def get_queryset(self):
         """Override queryset to filter for user"""

@@ -35,4 +35,5 @@ urlpatterns = [
     ),
     path("auth/", include("user.urls")),
     path("income/", include("income.urls")),
+    path("expenditure/", include("expenditure.urls")),
 ]
