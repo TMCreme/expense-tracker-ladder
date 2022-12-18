@@ -1,12 +1,15 @@
 """
 Test cases for User APIs
 """
+import json
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from rest_framework.test import APIClient
 from rest_framework import status
+
+from user.models import User
 
 
 SIGNUP_URL = reverse("auth:signup")
@@ -205,5 +208,90 @@ class UserAPITests(TestCase):
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_profile_success(self):
+        """Test getting profile successfully"""
+
+        payload = {
+            "email": "test@example.com",
+            "password": "testpasswd123"
+        }
+
+        create_user(**payload)
+        user = User.objects.get(email=payload['email'])
+
+        client = APIClient()
+        client.force_authenticate(user)
+        GET_UPDATE_URL = reverse("auth:user-profile", args=[user.id])
+
+        response = client.get(
+            GET_UPDATE_URL
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("email", response.data)
+        self.assertNotIn("password", response.data)
+        self.assertIn("id", response.data)
+
+    def test_get_profile_without_auth(self):
+        """Testing profile get without Auth"""
+        payload = {
+            "email": "test@example.com",
+            "password": "testpasswd123"
+        }
+
+        create_user(**payload)
+        user = User.objects.get(email=payload['email'])
+
+        GET_UPDATE_URL = reverse("auth:user-profile", args=[user.id])
+
+        response = self.client.get(
+            GET_UPDATE_URL
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_update_profile_success(self):
+        """Testing update on Profile with successfully"""
+        payload = {
+            "email": "test@example.com",
+            "password": "testpasswd123"
+        }
+
+        create_user(**payload)
+        user = User.objects.get(email=payload['email'])
+
+        client = APIClient()
+        client.force_authenticate(user)
+        GET_UPDATE_URL = reverse("auth:user-profile", args=[user.id])
+
+        response = client.put(
+            GET_UPDATE_URL,
+            {"first_name": "tester", "last_name": "testuser"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_profile_with_patch(self):
+        """Testing patch restriction"""
+        payload = {
+            "email": "test@example.com",
+            "password": "testpasswd123"
+        }
+
+        create_user(**payload)
+        user = User.objects.get(email=payload['email'])
+
+        client = APIClient()
+        client.force_authenticate(user)
+        GET_UPDATE_URL = reverse("auth:user-profile", args=[user.id])
+
+        response = client.patch(
+            GET_UPDATE_URL,
+            {"first_name": "tester", "last_name": "testuser"}
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+            )
+
 
 # Create your tests here.
