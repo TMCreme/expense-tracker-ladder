@@ -23,15 +23,16 @@ from drf_spectacular.views import (
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "api/docs/",
         SpectacularSwaggerView.as_view(
-            url_name="api-schema",
-            title="Expense Tracker API"
-            ),
+            title="Expense Tracker API",
+            url_name="api-schema"
+        ),
         name="api-docs"
     ),
     path("auth/", include("user.urls")),
+    path("income/", include("income.urls")),
 ]
