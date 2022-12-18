@@ -28,4 +28,4 @@ jobs:
       run: python manage.py test
     - name: Analysing the code with flake8
       run: |
-        flake8 --per-file-ignores="expensetracker/settings.py"
+        flake8 --per-file-ignores="expensetracker/settings.py:E501"
