@@ -4,10 +4,10 @@ from .views import (
     CreateUserView, LoginUserView
 )
 
-app_name = "app"
+app_name = "auth"
 
 
 urlpatterns = [
     path('signup/', CreateUserView.as_view(), name='signup'),
-    path('login/', LoginUserView.as_view(), name='token'),
+    path('login/', LoginUserView.as_view(), name='login'),
     ]
