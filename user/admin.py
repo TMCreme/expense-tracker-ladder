@@ -1,3 +1,6 @@
+"""
+Register models to manage with django admin
+"""
 from django.contrib import admin
 from .models import User
 

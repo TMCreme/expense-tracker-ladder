@@ -1,3 +1,6 @@
+"""
+Test cases for User APIs
+"""
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -21,6 +24,7 @@ class UserAPITests(TestCase):
         self.client = APIClient()
 
     def test_user_signup_success(self):
+        """Test a successful signup"""
         payload = {
             "email": "test@example.com",
             "password": "testpasswd123",
@@ -39,6 +43,7 @@ class UserAPITests(TestCase):
         self.assertNotIn('password', response.data)
 
     def test_user_with_email_exists_error(self):
+        """Try signup with an already existing email"""
         payload = {
             "email": "test@example.com",
             "password": "testpasswd123",
@@ -52,6 +57,7 @@ class UserAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_too_short_password(self):
+        """Test signup with a shorter password"""
         payload = {
             "email": "test@example.com",
             "password": "12",
@@ -69,6 +75,7 @@ class UserAPITests(TestCase):
         self.assertFalse(user_exists)
 
     def test_login_for_token(self):
+        """Test login to obtain token"""
         payload = {
             "email": "test@example.com",
             "password": "testpasswd123",
@@ -91,6 +98,7 @@ class UserAPITests(TestCase):
         self.assertIn("id", response.data)
 
     def test_wrong_credentials(self):
+        """Login to obtain token with wrong password"""
         payload = {
             "email": "test@example.com",
             "password": "testpasswd123"
@@ -98,7 +106,7 @@ class UserAPITests(TestCase):
         create_user(**payload)
 
         response = self.client.post(
-            LOGIN_URL, 
+            LOGIN_URL,
             {
                 "email": "test@example.com",
                 "password": "password"
@@ -109,6 +117,7 @@ class UserAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_signup_with_empty_password(self):
+        """Signup with empty string for password"""
         payload = {
             "email": "test@example.com",
             "password": ""
@@ -120,6 +129,7 @@ class UserAPITests(TestCase):
         # self.assertNotIn("")
 
     def test_login_without_creating_user(self):
+        """Login with user that does not exist"""
         payload = {
             "email": "test@example.com",
             "password": "testpasswd123"
@@ -128,17 +138,6 @@ class UserAPITests(TestCase):
         response = self.client.post(LOGIN_URL, payload)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Create your tests here.

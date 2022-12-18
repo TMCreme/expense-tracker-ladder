@@ -1,4 +1,7 @@
-from django.shortcuts import render
+"""
+API Views for the user
+"""
+# from django.shortcuts import render
 from django.contrib.auth import authenticate
 
 from rest_framework import generics, status
@@ -21,6 +24,7 @@ class CreateUserView(generics.CreateAPIView):
 
 
 class LoginUserView(TokenObtainPairView):
+    """Custom API View for Access and Refresh token"""
 
     serializer_class = AuthTokenSerializer
 
@@ -42,10 +46,9 @@ class LoginUserView(TokenObtainPairView):
                     "access_token": str(refresh.access_token),
                 }
             }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                "error": "Invalid Username/Password"
-            }, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            "error": "Invalid Username/Password"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Create your views here.
