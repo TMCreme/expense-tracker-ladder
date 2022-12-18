@@ -104,7 +104,7 @@ class LogoutUserView(APIView):
                 "error": "Invalid refresh token"
             }, status=status.HTTP_400_BAD_REQUEST)
         except TokenError as tke:
-            # print(tke)
+            print(tke)
             return Response({
                 "error": "Invalid refresh token"
             }, status=status.HTTP_400_BAD_REQUEST)
