@@ -1,4 +1,7 @@
 config.ini
 __pycache__
 db.sqlite3
-migrations
+# migrations
+
+.env
+
