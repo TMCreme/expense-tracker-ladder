@@ -8,7 +8,7 @@ WORKDIR /opt/ladder
 COPY ./requirements.txt /tmp/requirements.txt
 COPY . /opt/ladder/
 
-COPY .env /opt/ladder/.env
+# COPY .env /opt/ladder/.env
 
 # copy entrypoint.sh
 COPY ./entrypoint.sh /opt/ladder/entrypoint.sh
