@@ -17,7 +17,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Test 
-      run: docker-compose exec -it app python manage.py test
+      run: docker-compose run --rm app sh -c "python manage.py migrate && python manage.py test"
     - name: Analysing the code with flake8
       run: |
         docker-compose exec -it app flake8 --per-file-ignores="expensetracker/settings.py:E501"
